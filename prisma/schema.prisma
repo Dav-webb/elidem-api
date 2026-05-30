@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
+
+model Article {
+  id           String   @id @default(cuid())
+  category     String
+  categoryIcon String   @map("category_icon")
+  title        String
+  excerpt      String
+  imageUrl     String   @map("image_url")
+  imageAlt     String   @map("image_alt")
+  readTime     String   @map("read_time")
+  date         String
+  tag          String
+  published    Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("articles")
+}
+
+model Specialist {
+  id        String    @id @default(cuid())
+  name      String
+  specialty String
+  rating    Float
+  imageUrl  String    @map("image_url")
+  imageAlt  String    @map("image_alt")
+  available Boolean   @default(true)
+  category  String
+  sortOrder Int       @default(0) @map("sort_order")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  bookings  Booking[]
+
+  @@map("specialists")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String
+  badgeLabel  String   @map("badge_label")
+  imageUrl    String   @map("image_url")
+  imageAlt    String   @map("image_alt")
+  features    String[]
+  sortOrder   Int      @default(0) @map("sort_order")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("services")
+}
+
+model PricingTier {
+  id        String   @id @default(cuid())
+  name      String
+  icon      String
+  price     String
+  period    String
+  featured  Boolean  @default(false)
+  badge     String?
+  features  String[]
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("pricing_tiers")
+}
+
+model Step {
+  id        String @id @default(cuid())
+  num       String
+  icon      String
+  title     String
+  desc      String
+  sortOrder Int    @default(0) @map("sort_order")
+
+  @@map("steps")
+}
+
+model Booking {
+  id           String      @id @default(cuid())
+  name         String
+  phone        String
+  email        String?
+  service      String?
+  message      String?
+  status       String      @default("pending")
+  specialistId String?     @map("specialist_id")
+  specialist   Specialist? @relation(fields: [specialistId], references: [id])
+  notes        String?
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  @@map("bookings")
+}
