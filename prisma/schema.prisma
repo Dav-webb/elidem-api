@@ -25,6 +25,7 @@ model Article {
   categoryIcon String   @map("category_icon")
   title        String
   excerpt      String
+  content      String?
   imageUrl     String   @map("image_url")
   imageAlt     String   @map("image_alt")
   readTime     String   @map("read_time")
